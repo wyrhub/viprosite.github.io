@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="vipro">
+  
+  
+  <title>防火墙配置规则之源IP与目的IP | viprosite</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="网络编程,防火墙,">
+  
+
+  
+  <meta name="description" content="每个数据包都有 发送者ip和接收者ip 这两项内容；源ip 不能理解为发包主机与收包主机这两者中固定的某个的ip，它是指数据包中的发送者ip。">
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"xBceeHl6gsVuGy3RnRWLCMiK-gzGzoHsz","appkey":"FJw3P8C6ipCkUVuePTljyH8X","comment":true,"count":true},
+    welcome: {"enable":true,"interval":30},
+    start_time: "2018-12-1",
+    passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
+    is_post: true,
+    lock: false,
+    author: "vipro",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">ViProSite</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 学习使我快乐！</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/viprosite" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-11
+    </span>
+    
+      <span>
+        | <a href="/categories/网络编程/"><i class="fa fa-bookmark"></i>网络编程</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    防火墙配置规则之源IP与目的IP
+  </h1>
+  
+  <article class="passage-article">
+    <p>​    防火墙配置规则中，源ip与目的ip困扰我良久。具体来说，<em>host1</em> 去 ping <em>host2</em>，如果想要ping不通，那么源ip与目的ip应该分别对应哪个host的ip？进出方向又是啥？并且协议应该选择<em>ICMP</em> 还是 <em>ip</em>？</p>
+<p>​    尝试诸多可能的排列规则后，结论如下：</p>
+<ul>
+<li>ping使用的协议虽然是icmp，但过滤规则处需要设置为ip；</li>
+<li>进出方向是针对某个主机来说的，比如 <em>host1</em> 发出一个数据包，则针对host1来说，此时方向就是出（out）；host1收到一个数据包（即有一个包进入host1），此时对于host1来说方向就是进（in）；</li>
+<li>源ip与目的ip，即指每个数据包中的 <strong>发送者ip</strong> 与 <strong>接收者ip</strong>。比如host1想给host2 发送一个数据包，在已经得到host2的ip条件下，那么host1所发送的这个数据包中会包含 <strong>发送者host1 自身的ip</strong> 及 <strong>接收者host2的ip</strong>这两项内容；<strong>此时如果host2<em>不想</em> 收到host1给自己发的数据包</strong>，则在host2上安装防火墙，且过滤规则设置原理如下：<ul>
+<li>host1给host2发包package，即该package对于host1方向是出（out），<strong>对于host2方向是进（in）</strong></li>
+<li>因为该package由host1发出给host2，则该package头包含有host1与host2的ip（源ip与目的ip）内容；且该package由host1发出，所以针对该包package来说，<strong>源ip是host1的ip，目的ip是host2的ip</strong>。</li>
+<li>总结以上，该种情况： 源ip写host1的ip，目的ip可以不写，方向为进</li>
+<li>源ip与目的ip结合进出方向：（过滤规则即是阻止通信规则）<ul>
+<li><strong>（发送者ip为源ip，接受者ip为目的ip）</strong></li>
+<li><strong>只能阻止4种情况：自身-&gt;所有，自身-&gt;某个，某个-&gt;自身，所有-&gt;自身</strong></li>
+<li>只写源ip为自身ip，方向为out，则阻止自身与网络上的其他所有主机通信；</li>
+<li>只写目的ip为其他某主机ip，方向为out，则阻止自己与指定的ip通信（out隐含自身是发送者源ip）</li>
+<li>只写源ip为其他某主机ip，方向为in，则阻止该ip给自己发包（in隐含自身是接收者目的ip）；</li>
+<li>只写目的ip为自身ip，方向为in，则阻止网络上所有主机与自身通信</li>
+<li><strong>（4种情况无效：只写源ip是自身ip且方向为in；只写目的ip是其他某ip且方向为in；只写源ip是其他某ip且方向为out；只写目的ip是自身且方向为out）</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/基于IP的防火墙配置规则/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/防火墙/"><i class="fa fa-tags"></i>防火墙</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: viprosite@outlook.com
+      </div>
+    
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechat.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.png" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="javascript:void(0);" data-enable="false">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="javascript:void(0);" data-enable="false">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="vipro">
+  
+  
+  <title>vue-router | viprosite</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="vue,vue-router,vue-router,">
+  
+
+  
+  <meta name="description" content="Vue Router（Vue2.x）简要总结">
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"xBceeHl6gsVuGy3RnRWLCMiK-gzGzoHsz","appkey":"FJw3P8C6ipCkUVuePTljyH8X","comment":true,"count":true},
+    welcome: {"enable":true,"interval":30},
+    start_time: "2018-12-1",
+    passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
+    is_post: true,
+    lock: false,
+    author: "vipro",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">ViProSite</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 学习使我快乐！</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/viprosite" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-11
+    </span>
+    
+      <span>
+        | <a href="/categories/vue/"><i class="fa fa-bookmark"></i>vue</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    vue-router
+  </h1>
+  
+  <article class="passage-article">
+    <h4 id="路由3要素"><a href="#路由3要素" class="headerlink" title="路由3要素"></a>路由3要素</h4><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt; import Router from &apos;vue-router&apos;</span><br><span class="line">&gt; Vue.use(Router)</span><br><span class="line">&gt; new Router(&#123;                            1.路由映射表</span><br><span class="line">&gt;     mode: &apos;history&apos;,</span><br><span class="line">&gt;     routes:[</span><br><span class="line">&gt;         &#123;</span><br><span class="line">&gt;             path: &apos;/&apos;,</span><br><span class="line">&gt;             component: XXX</span><br><span class="line">&gt;         &#125;</span><br><span class="line">&gt;     ]</span><br><span class="line">&gt; &#125;)</span><br><span class="line">&gt; </span><br><span class="line">&gt; &lt;router-link :to=&quot;&#123;path: &apos;/&apos;&#125;&gt; home &lt;/router-link&gt;          2.页面中导航</span><br><span class="line">&gt; &lt;keep-alive&gt;</span><br><span class="line">&gt;   &lt;router-view&gt;&lt;/router-view&gt;             3.页面中其所在位置处渲染指定组件</span><br><span class="line">&gt; &lt;/keep-alive&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+<h4 id="路由参数"><a href="#路由参数" class="headerlink" title="路由参数"></a>路由参数</h4><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; routes:[</span><br><span class="line">&gt;     &#123;</span><br><span class="line">&gt;         path: &apos;/user/:id&apos;,</span><br><span class="line">&gt;         component: User</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; ]</span><br><span class="line">&gt; http://localhost/user/1101      设置了参数占位符后必须传入参数否则路由访问失败</span><br><span class="line">&gt; -</span><br><span class="line">&gt; 接收：</span><br><span class="line">&gt; &lt;p&gt;&#123;&#123;this.$route.params.id&#125;&#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+<h4 id="路由嵌套"><a href="#路由嵌套" class="headerlink" title="路由嵌套"></a>路由嵌套</h4><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt; routes:[</span><br><span class="line">&gt;     &#123;</span><br><span class="line">&gt;         path: &apos;/&apos;,</span><br><span class="line">&gt;         component: Home</span><br><span class="line">&gt;     &#125;,</span><br><span class="line">&gt;     &#123;</span><br><span class="line">&gt;         path: &apos;/user&apos;,</span><br><span class="line">&gt;         component: User,</span><br><span class="line">&gt;         children:[                      子路由只需要写一个children数组</span><br><span class="line">&gt;             &#123;</span><br><span class="line">&gt;                 path: &apos;add&apos;,</span><br><span class="line">&gt;                 component: UserAdd      子路由的component在其父路由组件中&lt;router-view&gt;</span><br><span class="line">&gt;             &#125;</span><br><span class="line">&gt;         ]</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; ]</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+<h4 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h4><blockquote>
+<p>声明式导航：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; &lt;router-link :to=&quot;&#123;path:&apos;/&apos;&#125;&quot;&gt; home &lt;/router-link&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>编程式导航：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; router.push(&#123;path: &apos;/user&apos;&#125;)   跳转到指定页面</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+<h4 id="命名视图"><a href="#命名视图" class="headerlink" title="命名视图"></a>命名视图</h4><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt; &lt;router-view name=&quot;viewA&quot;&gt;&lt;/router-view&gt;</span><br><span class="line">&gt; &lt;router-view name=&apos;viewB&apos;&gt;&lt;/router-view&gt;</span><br><span class="line">&gt; routes:[</span><br><span class="line">&gt;     &#123;</span><br><span class="line">&gt;         path: &apos;/&apos;,</span><br><span class="line">&gt;         component:&#123;</span><br><span class="line">&gt;             viewA: Apple,       Apple组件赋值给viewA</span><br><span class="line">&gt;             viewB: SubApp                赋值给</span><br><span class="line">&gt;         &#125;</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; ]</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+<h4 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h4><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; routes:[</span><br><span class="line">&gt;     &#123;</span><br><span class="line">&gt;         path: &apos;/&apos;, </span><br><span class="line">&gt;         redirect: &apos;/home&apos;        /路由重定向到 /home</span><br><span class="line">&gt;     &#125;,</span><br><span class="line">&gt;     &#123;</span><br><span class="line">&gt;         path: &apos;/home&quot;,</span><br><span class="line">&gt;         component: Home</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; ]</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#路由3要素"><span class="toc-text">路由3要素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#路由参数"><span class="toc-text">路由参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#路由嵌套"><span class="toc-text">路由嵌套</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#导航"><span class="toc-text">导航</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#命名视图"><span class="toc-text">命名视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#重定向"><span class="toc-text">重定向</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/vue-2019-04-11-vue-router/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/vue-router/"><i class="fa fa-tags"></i>vue-router</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: viprosite@outlook.com
+      </div>
+    
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechat.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.png" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/js-2019-04-12-js面试题/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/react-2019-04-11-redux/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

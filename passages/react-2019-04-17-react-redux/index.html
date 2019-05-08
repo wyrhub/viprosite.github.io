@@ -6,16 +6,16 @@
   <meta name="author" content="vipro">
   
   
-  <title>归档: 2019/4 | viprosite</title>
+  <title>react-redux（未完） | viprosite</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="blog, 前端, 后端">
+    <meta name="keywords" content="React,redux,react-redux,">
   
 
   
-  <meta name="description" content="vipro site">
+  <meta name="description" content="为方便使用，redux作者封装了React专用的库react-redux，该库是选用的；应直接使用redux，还是使用react-redux（提供了便利，但有额外API且需遵循组件拆分规范）？">
 
   
 
@@ -40,7 +40,7 @@
     welcome: {"enable":true,"interval":30},
     start_time: "2018-12-1",
     passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
-    is_post: false,
+    is_post: true,
     lock: false,
     author: "vipro",
     share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
@@ -158,73 +158,111 @@
 </nav>
 <div id="site-process"></div>
     <main>
-      <div class="timeline">
-  <h2 class="timeline-title">归档: 10篇</h2>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-17
+    </span>
+    
+      <span>
+        | <a href="/categories/React/"><i class="fa fa-bookmark"></i>React</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    react-redux（未完）
+  </h1>
   
-    
-      <h3 class="timeline-subtitle">2019</h3>
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/react-2019-04-17-react-redux/">react-redux（未完）</a>
-    </div>
+  <article class="passage-article">
+    <h2 id="UI组件"><a href="#UI组件" class="headerlink" title="UI组件"></a>UI组件</h2><p>react-redux将所有组件分成两类：UI组件和容器组件</p>
+<p><strong><em>UI组件负责UI呈现； 容器组件负责管理数据和逻辑</em></strong></p>
+<blockquote>
+<p>UI 组件特征：</p>
+<ol>
+<li><p>只负责UI呈现，不带有任何业务逻辑</p>
+</li>
+<li><p>没有状态（不使用this.state变量）</p>
+</li>
+<li><p>所有数据都由this.props提供</p>
+</li>
+<li><p>不使用任何redux 的api</p>
+</li>
+<li><p>因没有状态，UI组件又称“纯组件”，仅由参数props决定其值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;    const Title = val=&gt; &lt;h3&gt;&#123;val&#125;&lt;/h3&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>容器组件：</p>
+<ol>
+<li>负责管理数据和业务逻辑，不负责UI呈现</li>
+<li>带有内部状态</li>
+<li>使用redux的api</li>
+</ol>
+</blockquote>
+<blockquote>
+<hr>
+<p>当一个组件既有UI又有业务逻辑，则拆分为：外面是一个容器组件，里面包了一个UI组件；前者负责与外部的通信，将数据传给后者，由后者渲染出视图。</p>
+<p>React-redux规定，所有UI组件都由用户提供，容器组件则由react-redux自动生成（用户仅负责视觉层，状态管理全交给react-redux）；</p>
+</blockquote>
+<h4 id="connect（）"><a href="#connect（）" class="headerlink" title="connect（）"></a>connect（）</h4><blockquote>
+<p>用于从UI组件生成容器组件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; import &#123; connect &#125; from &apos;react-redux&apos;</span><br><span class="line">&gt; const VisibleToDoList = connect()(ToDoList)</span><br><span class="line">&gt; //ToDoList是UI组件，VisibleToDoList就是由react-redux通过connect方法自动生成的容器组件</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#UI组件"><span class="toc-text">UI组件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#connect（）"><span class="toc-text">connect（）</span></a></li></ol></li></ol>
+  </div>
+</aside>
   
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/函数体返回语句有无return-关键字区别/">函数体返回语句有无return 关键字区别</a>
-    </div>
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/react-2019-04-17-react-redux/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
   
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/js-2019-04-17-箭头函数/">箭头函数</a>
-    </div>
   
+    <div class="passage-tags">
+     
+      <a href="/tags/redux/"><i class="fa fa-tags"></i>redux</a>
+     
+      <a href="/tags/react-redux/"><i class="fa fa-tags"></i>react-redux</a>
     
-    <div class="timeline-item">
-      <time>2019-04-16</time>
-      <a target="_self" href="/passages/js-2019-04-16-函数-构造函数-其内var-变量及this-成员/">函数 构造函数 其内var 变量及this 成员</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-14</time>
-      <a target="_self" href="/passages/js-2019-04-14-Window对象与变量声明之间的关系/">Window对象与变量声明之间的关系</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-12</time>
-      <a target="_self" href="/passages/js-2019-04-12-js面试题/">js面试题</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/vue-2019-04-11-vue-router/">vue-router</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/react-2019-04-11-redux/">redux</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/react-2019-04-11-react-router/">React-router 学习记录</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/基于IP的防火墙配置规则/">防火墙配置规则之源IP与目的IP</a>
     </div>
   
 </div>
+
     </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
     
     <div class="site-footer-wrapper">
   <footer class="site-footer">
@@ -314,16 +352,16 @@
     <a href="javascript:void(0);" data-enable="false">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/函数体返回语句有无return-关键字区别/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
   <div class="bottom-bar-right">
-    <a href="javascript:void(0);" data-enable="false" id="site-toc-show-btn">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
       <i class="fa fa-bars"></i>
     </a>
     
-      <a href="javascript:void(0);" data-enable="false">
+      <a href="#site-comment" data-enable="true">
         <i class="fa fa-commenting"></i>
       </a>
     

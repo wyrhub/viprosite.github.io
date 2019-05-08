@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="vipro">
+  
+  
+  <title>React-router 学习记录 | viprosite</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="React,React-router,路由,react-router,">
+  
+
+  
+  <meta name="description" content="React-router  及 其相关的预定义组件之间的关系及各自的作用说明">
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"xBceeHl6gsVuGy3RnRWLCMiK-gzGzoHsz","appkey":"FJw3P8C6ipCkUVuePTljyH8X","comment":true,"count":true},
+    welcome: {"enable":true,"interval":30},
+    start_time: "2018-12-1",
+    passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
+    is_post: true,
+    lock: false,
+    author: "vipro",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">ViProSite</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 学习使我快乐！</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/viprosite" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-11
+    </span>
+    
+      <span>
+        | <a href="/categories/React/"><i class="fa fa-bookmark"></i>React</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    React-router 学习记录
+  </h1>
+  
+  <article class="passage-article">
+    <h3 id="所需模块："><a href="#所需模块：" class="headerlink" title="所需模块："></a>所需模块：</h3><blockquote>
+<p>react</p>
+<p>react-dom</p>
+<p>– [ 可不安装 react-router (npm i react-router -S) 4.x  ]</p>
+<p>react-router-dom (npm i react-router-dom –save) 4.x</p>
+</blockquote>
+<h5 id="引入的模块说明："><a href="#引入的模块说明：" class="headerlink" title="引入的模块说明："></a>引入的模块说明：</h5><blockquote>
+<p>react-router 只提供核心路由和函数，一般不直接使用</p>
+<p>react-router-dom 供浏览器/web应用使用的API（同时把react-router的API暴露）</p>
+<p>react-router-native 供React Native 应用使用的API（同时把react-router的API暴露）</p>
+</blockquote>
+<h3 id="简单示例："><a href="#简单示例：" class="headerlink" title="简单示例："></a>简单示例：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123;BrowserRouter, Route, Link&#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BasicExample = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">  &lt;BrowserRouter&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &lt;li&gt;&lt;Link to='/'&gt;Home&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">        &lt;li&gt;&lt;Link to='/about'&gt;about&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">        &lt;li&gt;&lt;Link to='/topics'&gt;topics&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">      &lt;<span class="regexp">/ul&gt;</span></span><br><span class="line"><span class="regexp">      &lt;hr /</span>&gt;</span><br><span class="line">      &lt;Route exact path=<span class="string">'/'</span> component=&#123;Home&#125; /&gt;</span><br><span class="line">      &lt;Route path=<span class="string">'/about'</span> component=&#123;About&#125; /&gt;</span><br><span class="line">      &lt;Route path=<span class="string">'/topics'</span> component=&#123;Topics&#125; /&gt;    <span class="comment">//topics下有子路由</span></span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>BrowserRouter&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Home = &lt;h3&gt;home&lt;/h3&gt;</span><br><span class="line"><span class="keyword">const</span> About = &lt;h3&gt;about&lt;/h3&gt;</span><br><span class="line"><span class="keyword">const</span> Topics = <span class="function">(<span class="params">&#123;match&#125;</span>)=&gt;</span>&#123;              <span class="comment">//component属性指定的组件，可直接使用match对象</span></span><br><span class="line">  &lt;div&gt;                                  <span class="comment">//match.url即是 /topics</span></span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &lt;li&gt;&lt;Link to=&#123;`$&#123;match.url&#125;/rendering`&#125;&gt;topics rendering&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">      &lt;li&gt;&lt;Link to=&#123;`$&#123;match.url&#125;/components`&#125;&gt;topics components&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">    &lt;<span class="regexp">/ul&gt;</span></span><br><span class="line"><span class="regexp">    &lt;Route exact path=&#123;match.url&#125; render=&#123;()=&gt;(&lt;h3&gt;topics&lt;/</span>h3&gt;)&#125; /&gt;   </span><br><span class="line">    &lt;Route path=&#123;<span class="string">`<span class="subst">$&#123;match.url&#125;</span>/:topicId`</span>&#125; component=&#123;Topic&#125; /&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">const Topic = (&#123;match&#125;)=&gt;&#123;</span></span><br><span class="line"><span class="regexp">  &lt;h3&gt;&#123;match.params.topicId&#125;&lt;/</span>h3&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> BasicExample</span><br></pre></td></tr></table></figure>
+<h3 id="核心组件说明："><a href="#核心组件说明：" class="headerlink" title="核心组件说明："></a>核心组件说明：</h3><ul>
+<li><p>&lt;Link[NavLink] to=’/user/123’ … /&gt;</p>
+<blockquote>
+<p>Link属性：</p>
+<p>-to &lt;string &lt;object</p>
+<p>​    =”path/1101” </p>
+<p>​    =2个花括号pathanme:’/path’,search:’?sort=name’, hash:’#the-hash’}}</p>
+<p>-replace &lt;bool = false(默认)</p>
+<p>NavLink属性：</p>
+<p>-to</p>
+<p>-exact &lt;bool 为true时to属性值需要完全匹配url</p>
+<p>-activeClassName &lt;string 选中时的样式类名，默认active</p>
+<p>-activeStyle &lt;Object 元素选中时添加指定的样式</p>
+<p>-scrict &lt;bool true时to属性值是否与url完全匹配将考虑pathname后的/</p>
+<p>-isActive  &lt;func 判断链接是否激活的额外逻辑</p>
+  <figure class="highlight plain"><figcaption><span>示例</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; const oddEvent = (match, location)=&gt;&#123;</span><br><span class="line">&gt; if(!match)&#123;</span><br><span class="line">&gt;  return false</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; const eventId = parseInt(match.params.eventId)</span><br><span class="line">&gt; return !isNaN(eventId) &amp;&amp; eventId%2 === 1</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; &lt;NavLink to=&apos;/events/123&apos; isActive=&#123;oddEvent&#125;&gt;Event 123&lt;/NavLink&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>两者的功能类似，都类似于a标签（最后也就是渲染成a标签）的点击后导航到指定的url处；<br>那跳转后应该显示什么视图内容？就需要Route组件：</p>
+</blockquote>
+</li>
+<li><p>&lt;Route path=’/user/:id’ component={Xxx} </p>
+<blockquote>
+<p>属性：<br> -path &lt;string<br> -exact &lt;bool path属性值与url需要完全匹配<br> -strict &lt;bool true时完整匹配考虑pathname后的 /<br>3种渲染方法：</p>
+&lt;Route component={}  地址匹配时react组件才被渲染，route props也随着被渲染（优先级最高，同一组件不要使用多种渲染方式）<br>&lt;Route render={} 对于内联渲染和包装组件但不引起意料之外的重新挂载很方便<br>&lt;Route children={} 与render属性工作方式类似，除了它不管地址匹配与否都会被调用<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; &lt;Route path=&apos;/home&apos; render=&#123;()=&gt;&lt;h3&gt;hehehe&lt;/h3&gt;&#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>当Route组件的path属性与上面两个导航组件指定的url匹配时，页面中就在该Route所处位置处渲染其component属性指定的组件。</p>
+</blockquote>
+</li>
+<li><p>当没有一个能匹配时，可以用&lt;Redirect</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> &lt;Switch&gt;</span><br><span class="line">   &lt;Route path=&apos;/&apos; exact component=&#123;Top&#125; /&gt;           ----第一个路由中仍需要exact</span><br><span class="line">   &lt;Route path=&apos;/user/add&apos; component=&#123;UserAdd&#125; /&gt;</span><br><span class="line">   &lt;Route path=&apos;/user&apos; component=&#123;User&#125; /&gt;</span><br><span class="line">   &lt;Redirect to=&apos;/&apos; /&gt;</span><br><span class="line">&lt;/Switch&gt;</span><br><span class="line">Redirect组件 在所有路由都没有匹配成功时跳转到指定的某个路由（上面的若匹配不成功则跳转到 / 渲染Top组件）</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>Switch组件</p>
+<blockquote>
+<p>只用于包裹Route组件，只渲染第一个匹配到的组件；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&gt;  &lt;Switch&gt;</span><br><span class="line">&gt;    &lt;Route path=&apos;/&apos; exact component=&#123;Top&#125; /&gt;           ----第一个路由中仍需要exact</span><br><span class="line">&gt;    &lt;Route path=&apos;/user/add&apos; component=&#123;UserAdd&#125; /&gt;</span><br><span class="line">&gt;    &lt;Route path=&apos;/user&apos; component=&#123;User&#125; /&gt;</span><br><span class="line">&gt;    &lt;Redirect to=&apos;/&apos; /&gt;</span><br><span class="line">&gt; &lt;/Switch&gt;</span><br><span class="line">&gt; --</span><br><span class="line">&gt; 若把 /user/add 放于 /user 后，则访问 /user/add 会被 /user 匹配到进而显示 /user 对应的组件内容；</span><br><span class="line">&gt; 也可以给两者之一添加  exact 关键字使得某个严格匹配进而间接导致另一个也严格匹配。</span><br><span class="line">&gt; ---</span><br><span class="line">&gt; 以下代码：</span><br><span class="line">&gt; return (</span><br><span class="line">&gt;     &lt;div&gt;</span><br><span class="line">&gt;       &lt;div id=&apos;container&apos;&gt;</span><br><span class="line">&gt;         &lt;Switch&gt;    ------若不用switch组件，则more-music路由有两个匹配，最终会渲染Home和MoreMusic两个组件在view中</span><br><span class="line">&gt;           &lt;Route path=&apos;/more-music&apos; exact component=&#123;Home&#125; /&gt;</span><br><span class="line">&gt;           &lt;Route path=&apos;/my-music/:id&apos; component=&#123;MyMusic&#125; /&gt;</span><br><span class="line">&gt;           &lt;Route path=&apos;/more-music&apos; component=&#123;MoreMusic&#125; /&gt;</span><br><span class="line">&gt;           &lt;Route path=&apos;/friends&apos; component=&#123;Friends&#125; /&gt;</span><br><span class="line">&gt;         &lt;/Switch&gt;</span><br><span class="line">&gt;       &lt;/div&gt;</span><br><span class="line">&gt;     &lt;/div&gt;</span><br><span class="line">&gt;   )</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>BrowserRouter/HashRouter 组件</p>
+<blockquote>
+<p>多个 Link/NavLink 与 Route 组件组合成为一个整体，用 BrowserRouter/HashRouter 组件包裹起来。</p>
+<p>HashRouter：<a href="http://localhost:3000/#/my-music" target="_blank" rel="noopener">http://localhost:3000/#/my-music</a> 用hash值对路由进行控制</p>
+<p>BrowseRouter：<a href="http://localhost:3000/my-music" target="_blank" rel="noopener">http://localhost:3000/my-music</a> html5的history API</p>
+<p>网站文件存放到服务器二级目录下可以使用：</p>
+<p>&lt; BrowserRouter basename=’/sub’&gt; &lt; TopNav /&gt;</p>
+<p>&lt; Main / &gt;</p>
+<p>&lt; /BrowserRouter&gt;</p>
+<p><a href="http://localhost:3000/sub/my-music" target="_blank" rel="noopener">http://localhost:3000/sub/my-music</a> 此时访问会自动添加sub</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; &lt;BrowserRouter&gt;</span><br><span class="line">&gt;    &lt;TopNav /&gt;</span><br><span class="line">&gt;    &lt; Main / &gt;</span><br><span class="line">&gt;    &lt;AudioPlay audioSrc=&#123;store.getState().src &#125;/&gt;</span><br><span class="line">&gt; &lt;/BrowserRouter&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>match对象</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; &lt;BrowserRouter&gt;</span><br><span class="line">&gt;   &lt;ul&gt;</span><br><span class="line">&gt;     &lt;li&gt;&lt;Link to=&apos;/about&apos;&gt;about&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;     &lt;li&gt;&lt;Link to=&apos;/topics&apos;&gt;topics&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;   &lt;/ul&gt;</span><br><span class="line">&gt;    &lt;Route exact path=&apos;/:cat&apos; component=&#123;Child&#125; /&gt;</span><br><span class="line">&gt; &lt;/BrowserRouter&gt;</span><br><span class="line">&gt; </span><br><span class="line">&gt; const Child = (&#123;match&#125;)=&gt;&#123;</span><br><span class="line">&gt;   &lt;div&gt;</span><br><span class="line">&gt;     &lt;h3&gt;&#123;match.params.cat&#125;&lt;/h3&gt;</span><br><span class="line">&gt;   &lt;/div&gt;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>使用router后被放入props中的一个属性,此时props：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&gt; &#123;history: &#123;…&#125;, location: &#123;…&#125;, match: &#123;…&#125;, staticContext: undefined&#125;</span><br><span class="line">&gt; history:</span><br><span class="line">&gt;     action: &quot;POP&quot;</span><br><span class="line">&gt;     block: ƒ block(prompt)</span><br><span class="line">&gt;     createHref: ƒ createHref(location)</span><br><span class="line">&gt;     go: ƒ go(n)</span><br><span class="line">&gt;     goBack: ƒ goBack()</span><br><span class="line">&gt;     goForward: ƒ goForward()</span><br><span class="line">&gt;     length: 34</span><br><span class="line">&gt;     listen: ƒ listen(listener)</span><br><span class="line">&gt; 	location: &#123;pathname: &quot;/my-music/1101&quot;, search: &quot;?name=wyr&quot;, hash: &quot;&quot;, state: undefined&#125;</span><br><span class="line">&gt; 	push: ƒ push(path, state)</span><br><span class="line">&gt; 	replace: ƒ replace(path, state)</span><br><span class="line">&gt; 	__proto__: Object</span><br><span class="line">&gt; location:</span><br><span class="line">&gt;     hash: &quot;&quot;</span><br><span class="line">&gt;     pathname: &quot;/my-music/1101&quot;</span><br><span class="line">&gt;     search: &quot;?name=wyr&quot;</span><br><span class="line">&gt;     state: undefined</span><br><span class="line">&gt;     __proto__: Object</span><br><span class="line">&gt; match:</span><br><span class="line">&gt;     isExact: false</span><br><span class="line">&gt;     params: &#123;&#125;</span><br><span class="line">&gt;     path: &quot;/my-music&quot;</span><br><span class="line">&gt;     url: &quot;/my-music&quot;</span><br><span class="line">&gt;     __proto__: Object</span><br><span class="line">&gt; staticContext: undefined</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>路径中传递的参数由match对象接收，路径参数占位符成为其下的属性，访问方式： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; &#123;this.props.match.params.id&#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>只有Route组件的component属性指定的组件才有this.props.match对象；</p>
+<p>4个属性：</p>
+<p> -match.params</p>
+<p> -match.isExact</p>
+<p> -match.path</p>
+<p> -match.url</p>
+<p>没有参数时match.path 与 match.url 相同；有参数时path指Route组件的path属性值，url指浏览器显示的真实url（参数占位符此时是具体的值）；</p>
+<p>1.写路由路径时采用path：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt; const Topics = (&#123;match&#125;)=&gt;&#123;</span><br><span class="line">&gt;   &lt;div&gt;</span><br><span class="line">&gt;     &lt;ul&gt;</span><br><span class="line">&gt;       &lt;li&gt;&lt;Link to=&#123;`$&#123;match.path&#125;/rendering`&#125;&gt;topics rendering&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;       &lt;li&gt;&lt;Link to=&#123;`$&#123;match.url&#125;/components`&#125;&gt;topics components&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;     &lt;/ul&gt;</span><br><span class="line">&gt;     &lt;Route exact path=&#123;match.path&#125; render=&#123;()=&gt;(&lt;h3&gt;&lt;/h3&gt;)&#125; /&gt;</span><br><span class="line">&gt;     &lt;Route path=&#123;`$&#123;match.path&#125;/:topicId`&#125; component=&#123;Topic&#125; /&gt;</span><br><span class="line">&gt;   &lt;/div&gt;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; match.url时，因为/user/5/rendering相当于是写死的，路径中没有参数，得不到5这个参数</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li><p>避免match冲突：</p>
+<p>通过/users/add和/users/5/edit进行用户添加和编辑，因为/users/:id 会同时匹配到两个路由，采用把匹配范围最大的放最后的方式避免：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;    const Topics = (&#123;match&#125;)=&gt;&#123;</span><br><span class="line">&gt;      &lt;div&gt;</span><br><span class="line">&gt;        &lt;Route exact path=&#123;match.url&#125; render=&#123;()=&gt;(&lt;h3&gt;&lt;/h3&gt;)&#125; /&gt;</span><br><span class="line">&gt;        &lt;Route path=&#123;`$&#123;match.url&#125;/add`&#125; component=&#123;Topic&#125; /&gt;</span><br><span class="line">&gt;        &lt;Route path=&#123;`$&#123;match.url&#125;/:topicId/edit`&#125; component=&#123;Topic&#125; /&gt;</span><br><span class="line">&gt;        &lt;Route path=&#123;`$&#123;match.url&#125;/:topicId`&#125; component=&#123;Topic&#125; /&gt;</span><br><span class="line">&gt;      &lt;/div&gt;</span><br><span class="line">&gt;    &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>   3.match实现嵌套：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&gt;    const UserSubLayout = (&#123;match&#125;)=&gt; (         //用户列表页与用户详情页的布局组件</span><br><span class="line">&gt;      &lt;div&gt;</span><br><span class="line">&gt;        &lt;aside&gt;</span><br><span class="line">&gt;        ...</span><br><span class="line">&gt;        &lt;/aside&gt;</span><br><span class="line">&gt;        &lt;main&gt;</span><br><span class="line">&gt;          &lt;Switch&gt;</span><br><span class="line">&gt;            &lt;Route path=&#123;match.path&#125; exact component=&#123;BrowersUserPage&#125; /&gt;   用户列表页</span><br><span class="line">&gt;            &lt;Route path=&#123;`$&#123;match.path&#125;/:userId`&#125; component=&#123;UserDetail&#125; /&gt;      某个用户页</span><br><span class="line">&gt;          &lt;/Switch&gt;</span><br><span class="line">&gt;        &lt;/main&gt;</span><br><span class="line">&gt;      &lt;/div&gt;</span><br><span class="line">&gt;    )</span><br><span class="line">&gt;    const BrowersUserPage = (&#123;match&#125;)=&gt; &#123;        //用户列表页组件</span><br><span class="line">&gt;      &lt;ul&gt;</span><br><span class="line">&gt;        &lt;li&gt;&lt;Link to=&#123;`$&#123;match.path&#125;/bob`&#125;&gt;bob&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;        &lt;li&gt;&lt;Link to=&#123;`$&#123;match.path&#125;/bob1`&#125;&gt;bob1&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;        &lt;li&gt;&lt;Link to=&#123;`$&#123;match.path&#125;/bob2`&#125;&gt;bob2&lt;/Link&gt;&lt;/li&gt;</span><br><span class="line">&gt;      &lt;/ul&gt;</span><br><span class="line">&gt;    &#125;</span><br><span class="line">&gt;    const UserDetail = (&#123;match&#125;)=&gt; &lt;UserDetailPage userId=&#123;match.params.userId&#125; /&gt;   //某用户详情页</span><br><span class="line">&gt;    const UserDetailPage = (&#123;userId&#125;)=&gt; &lt;h3&gt;&#123;userId&#125;&lt;/h3&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+</li>
+<li><p>查询字符串：</p>
+<blockquote>
+<p>this.props.location:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;-&gt;http://localhost:3000/my-music/1101?name=wyr</span><br><span class="line">&gt;hash: &quot;&quot;</span><br><span class="line">&gt;pathname: &quot;/my-music/1101&quot;</span><br><span class="line">&gt;search: &quot;?name=wyr&quot;</span><br><span class="line">&gt;state: undefined</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>通过location对象的search属性进行格式化</p>
+</blockquote>
+</li>
+<li><p>withRouter:<br>除Route组件的component属性对应的组件可以获取match外还可以通过withRouter的方法直接将路由参数传递到目标组件（可一和redux一同使用）</p>
+</li>
+</ul>
+<h1 id="注意点："><a href="#注意点：" class="headerlink" title="注意点："></a>注意点：</h1><ol>
+<li><p>包含式路由与exact：</p>
+<blockquote>
+<p>匹配 path=/user 的路由会匹配 path=/ 的路由,页面会同时渲染两个部分；exact用于准确匹配path与url</p>
+</blockquote>
+</li>
+<li><p>Switch组件仅渲染第一个被匹配到的组件</p>
+</li>
+<li><p>Redirect组件单独使用时一旦匹配到就重定向；配合Switch组件时只有当没有路由匹配时才会重定向；</p>
+</li>
+<li><p>嵌套布局（子路由）（子路由第一项的path与父路由相同，考虑exact）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">import React from &apos;react&apos;;</span><br><span class="line">import &#123;BrowserRouter, Route, Switch, Redirect &#125; from &apos;react-router-dom&apos;</span><br><span class="line">const PrimaryLayout = () =&gt;(</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;header&gt;</span><br><span class="line">      react 4 App</span><br><span class="line">    &lt;/header&gt;</span><br><span class="line">    &lt;Switch&gt;</span><br><span class="line">        &lt;Route path=&apos;/&apos; exact component=&#123;Top&#125; /&gt;</span><br><span class="line">        &lt;Route path=&apos;/users&apos; component=&#123;UserSubLayout&#125; /&gt;        ------1</span><br><span class="line">        &lt;Redirect to=&apos;/&apos; /&gt;</span><br><span class="line">    &lt;/Switch&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">)</span><br><span class="line">const Top = () =&gt; &lt;div&gt;top content&lt;/div&gt;</span><br><span class="line">const App = () =&gt; (</span><br><span class="line">  &lt;BrowserRouter&gt;</span><br><span class="line">    &lt;PrimaryLayout /&gt;</span><br><span class="line">  &lt;/BrowserRouter&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">-</span><br><span class="line"></span><br><span class="line">const UserSubLayout = ()=&gt; (         //用户列表页与用户详情页的布局组件</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;aside&gt;</span><br><span class="line">    ...</span><br><span class="line">    &lt;/aside&gt;</span><br><span class="line">    &lt;main&gt;</span><br><span class="line">      &lt;Switch&gt;</span><br><span class="line">        &lt;Route path=&apos;/users&apos; exact component=&#123;BrowersUserPage&#125; /&gt;   用户列表</span><br><span class="line">        &lt;Route path=&apos;/users/:userid&apos; component=&#123;UserDetail&#125; /&gt;      某个用户页</span><br><span class="line">      &lt;/Switch&gt;</span><br><span class="line">    &lt;/main&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">)</span><br><span class="line">const BrowersUserPage = ()=&gt; &lt;h2&gt;用户列表页&lt;/h2&gt;</span><br><span class="line">const UserDetail = ()=&gt; &lt;h3&gt;某个用户的详情页&lt;/h3&gt;</span><br><span class="line">// 以上的方法将包含子页面的模块单独看成一个整体模块，然后将子模块嵌套在该整体模块中，整体模块渲染的时候布局一次性渲染；</span><br><span class="line">// 当匹配子模块路由时只会单独渲染子模块的那一部分。（子页面需要明确父模块的路径如/users以保证能够被匹配到）</span><br><span class="line">------</span><br><span class="line">说明：</span><br><span class="line">页面只会渲染  不含路由部分（公共部分）+被匹配到的组件  两部分内容。​</span><br><span class="line">当访问/users时首先1被匹配到从而渲染  UserSubLayout   （用户布局组件）显示在页面中路由定义的位置（即页面中1位置）；而UserSubLayout中的 /users 也被匹配到，所以页面中1位置所在区域又渲染了  BrowersUserPage  组件（用户列表组件），此时页面显示：</span><br><span class="line">react 4 App</span><br><span class="line">...</span><br><span class="line">用户列表页</span><br><span class="line">---</span><br><span class="line">同理，当访问 /users/1101 时，页面显示</span><br><span class="line">react 4 App...某个用户的详情页</span><br></pre></td></tr></table></figure></li>
+</ol>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#所需模块："><span class="toc-text">所需模块：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#引入的模块说明："><span class="toc-text">引入的模块说明：</span></a></li></ol></li></ol><li class="toc-item toc-level-3"><a class="toc-link" href="#简单示例："><span class="toc-text">简单示例：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#核心组件说明："><span class="toc-text">核心组件说明：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#注意点："><span class="toc-text">注意点：</span></a>
+  </li></div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/react-2019-04-11-react-router/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/路由/"><i class="fa fa-tags"></i>路由</a>
+     
+      <a href="/tags/react-router/"><i class="fa fa-tags"></i>react-router</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: viprosite@outlook.com
+      </div>
+    
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechat.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.png" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/react-2019-04-11-redux/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/基于IP的防火墙配置规则/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

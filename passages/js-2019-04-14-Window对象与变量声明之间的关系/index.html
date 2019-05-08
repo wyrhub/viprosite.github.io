@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="vipro">
+  
+  
+  <title>Window对象与变量声明之间的关系 | viprosite</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="JavaScript,window对象,变量声明与赋值,">
+  
+
+  
+  <meta name="description" content="js中所有自定义变量和函数都会成为window对象的一个属性（浏览器环境）">
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"xBceeHl6gsVuGy3RnRWLCMiK-gzGzoHsz","appkey":"FJw3P8C6ipCkUVuePTljyH8X","comment":true,"count":true},
+    welcome: {"enable":true,"interval":30},
+    start_time: "2018-12-1",
+    passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
+    is_post: true,
+    lock: false,
+    author: "vipro",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">ViProSite</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 学习使我快乐！</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/viprosite" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-14
+    </span>
+    
+      <span>
+        | <a href="/categories/JavaScript/"><i class="fa fa-bookmark"></i>JavaScript</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Window对象与变量声明之间的关系
+  </h1>
+  
+  <article class="passage-article">
+    <p>本篇内容总结：</p>
+<ol start="0">
+<li><p>区分 <strong>一句一运行</strong>  与 <strong>整段js代码运行</strong> 两种执行机制的不同</p>
+</li>
+<li><p>自定义变量（无关var使用与否）及函数都会成为window对象的一个属性</p>
+</li>
+<li><p>函数内未用var声明的变量，在函数执行后会使该变量自动成为window对象的一个属性</p>
+</li>
+<li><p>函数内未用var声明的变量，相当于对已有的变量（该变量不存在时则在 window对象中创建）赋值；从而可能导致覆盖其外部同名的变量值</p>
+</li>
+<li><p>在函数 f 内部<strong>未用</strong>var<strong>声明与函数同名</strong>的变量 f，在函数 f 执行后，f 将由函数变为变量</p>
+</li>
+<li><p>同仅是声明，则函数声明先于变量声明（无关代码顺序）且忽略其后的同名变量声明；对函数名赋值，会导致其从函数变为其他类型</p>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var f = function()&#123; alert(1) &#125;</span><br><span class="line">function f()&#123; alert(2)&#125;</span><br><span class="line">上面的相当于：</span><br><span class="line"> function f()&#123; 2 &#125;</span><br><span class="line"> var f;</span><br><span class="line"> f = function()&#123; 1 &#125;         ----f最终指向 1</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="1-自定义变量与window对象关系"><a href="#1-自定义变量与window对象关系" class="headerlink" title="1. 自定义变量与window对象关系"></a>1. 自定义变量与window对象关系</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">//浏览器控制台中（只看a开头的window属性）</span><br><span class="line">1.首先看初始时this（此时是window对象）值</span><br><span class="line">console.log(this)</span><br><span class="line">    Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">    alert: ƒ alert()</span><br><span class="line">    atob: ƒ atob()</span><br><span class="line">    blur: ƒ ()</span><br><span class="line">2.声明age变量</span><br><span class="line">var age</span><br><span class="line">	undefined</span><br><span class="line">3.此时this对象中新增age属性，值初始化为undefined</span><br><span class="line">console.log(this)</span><br><span class="line">    Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">    age: undefined        //-----var 声明的变量自动成为window对象的一个属性，初始值undefined</span><br><span class="line">    alert: ƒ alert()</span><br><span class="line">    atob: ƒ atob()</span><br><span class="line">    blur: ƒ ()</span><br><span class="line">4.对age赋值</span><br><span class="line">age = 21</span><br><span class="line">	21</span><br><span class="line">5.再看this，此时age已被正确赋值</span><br><span class="line">console.log(this)</span><br><span class="line">    Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">    age: 21</span><br><span class="line">    alert: ƒ alert()</span><br><span class="line">    atob: ƒ atob()</span><br><span class="line">    blur: ƒ ()</span><br><span class="line">6.声明方法 getAge，其打印this.age 值</span><br><span class="line">function getAge()&#123;</span><br><span class="line">    console.log(this.age)</span><br><span class="line">&#125;</span><br><span class="line">7.调用getAge方法</span><br><span class="line">getAge()</span><br><span class="line">21</span><br></pre></td></tr></table></figure>
+<h3 id="2-变量声明与函数声明的关系"><a href="#2-变量声明与函数声明的关系" class="headerlink" title="2. 变量声明与函数声明的关系"></a>2. 变量声明与函数声明的关系</h3><blockquote>
+<ol>
+<li>函数内未用var声明的变量，在函数执行后会自动成为window对象的一个属性：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&gt; function f()&#123;</span><br><span class="line">&gt;     sex = &apos;man&apos;</span><br><span class="line">&gt;     console.log(sex)</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; console.log(this)</span><br><span class="line">&gt;     scrollbars: BarProp &#123;visible: true&#125;</span><br><span class="line">&gt;     self: Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">&gt;     sessionStorage: Storage &#123;length: 0&#125;</span><br><span class="line">&gt;     setInterval: ƒ setInterval()</span><br><span class="line">&gt;     ---------此时window对象没有sex属性</span><br><span class="line">&gt; f()</span><br><span class="line">&gt; console.log(this)</span><br><span class="line">&gt;     scrollbars: BarProp &#123;visible: true&#125;</span><br><span class="line">&gt;     self: Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">&gt;     sessionStorage: Storage &#123;length: 0&#125;</span><br><span class="line">&gt;     setInterval: ƒ setInterval()</span><br><span class="line">&gt;     setTimeout: ƒ setTimeout()</span><br><span class="line">&gt;     sex: &quot;man&quot;       ------函数执行后，函数内未用var声明的变量已成为window对象的属性</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li>函数内用var声明的变量，在函数执行后不会自动成为window对象的一个属性：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt; function f()&#123;</span><br><span class="line">&gt;     sex = &apos;man&apos;</span><br><span class="line">&gt;     var fName = &apos;f&apos;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; f()</span><br><span class="line">&gt; console.log(this)</span><br><span class="line">&gt;     external: External &#123;&#125;</span><br><span class="line">&gt;     f: ƒ f()</span><br><span class="line">&gt;     fetch: ƒ fetch()</span><br><span class="line">&gt;     find: ƒ find()</span><br><span class="line">&gt;     focus: ƒ ()</span><br><span class="line">&gt;     frameElement: null</span><br><span class="line">&gt;     frames: Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">&gt;     fun: ƒ fun()</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="3">
+<li><p>函数内未用var声明的变量，相当于对已有的变量（该变量不存在时则在 window对象中创建）赋值</p>
+<p>函数内部的变量未用var声明，导致覆盖其外部同名的变量值</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&gt; function ff()&#123;</span><br><span class="line">&gt;     leng = 16</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; this.leng</span><br><span class="line">&gt; 	undefined</span><br><span class="line">&gt; ff()</span><br><span class="line">&gt; this.leng</span><br><span class="line">&gt; 	16</span><br><span class="line">&gt; --------------------</span><br><span class="line">&gt; var age = 21</span><br><span class="line">&gt; console.log(age)</span><br><span class="line">&gt; 	21                 1. var 声明的变量age初始值为21</span><br><span class="line">&gt; function fun()&#123;</span><br><span class="line">&gt;     age = 22           2. 函数内未用var声明的变量，相当于对已有的age变量（该变量不存在时则在 window对象中创建）赋值</span><br><span class="line">&gt;     console.log(age)</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; fun()</span><br><span class="line">&gt; 	22</span><br><span class="line">&gt; console.log(age)</span><br><span class="line">&gt; 	22                 3. 导致函数内部的变量覆盖了其外部的变量值</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li><p>函数内部<strong>未用</strong>var   声明与函数同名   的变量，在函数执行后nam由函数变为变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;    function nam()&#123;</span><br><span class="line">&gt;        nam = &apos;nam&apos;</span><br><span class="line">&gt;        console.log(nam)</span><br><span class="line">&gt;    &#125;</span><br><span class="line">&gt;    nam()</span><br><span class="line">&gt;    ------执行nam()后，首先打印nam变量值，此后修改this.nam值（由原来的nam函数变为nam变量）</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<ol start="5">
+<li><p>变量声明与函数声明先后关系：</p>
+<p>同仅是声明，则函数声明先于变量声明（无关代码顺序）且忽略其后的同名变量声明（及赋值）；</p>
+<p>对函数名赋值，会导致其从函数变为其他类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&gt;       var age; function age()&#123;&#125;</span><br><span class="line">&gt;       age</span><br><span class="line">&gt;       ƒ age()&#123;&#125;</span><br><span class="line">&gt;       -</span><br><span class="line">&gt;       function nam()&#123;&#125;; var nam;        -----已有nam声明，此处忽略nam变量声明</span><br><span class="line">&gt;       nam</span><br><span class="line">&gt;       ƒ nam()&#123;&#125;</span><br><span class="line">&gt;       --------------</span><br><span class="line">&gt;       function a()&#123;&#125;</span><br><span class="line">&gt;       typeof a</span><br><span class="line">&gt;       	&quot;function&quot;</span><br><span class="line">&gt;       -</span><br><span class="line">&gt;       a =21</span><br><span class="line">&gt;       	21</span><br><span class="line">&gt;       typeof a</span><br><span class="line">&gt;       	&quot;number&quot;</span><br><span class="line">&gt;       --------------</span><br><span class="line">&gt;       var age; function age()&#123;&#125;; age = 21</span><br><span class="line">&gt;       age</span><br><span class="line">&gt;       	21</span><br><span class="line">&gt;       -</span><br><span class="line">&gt;       function nam()&#123;&#125;; var nam; nam = 22</span><br><span class="line">&gt;       	nam</span><br><span class="line">&gt;       22</span><br><span class="line">&gt;       ---</span><br><span class="line">&gt;       var age = 21；function age()&#123;    console.log(21) &#125;</span><br><span class="line">&gt;       console.log(this)</span><br><span class="line">&gt;           Window &#123;postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …&#125;</span><br><span class="line">&gt;           age: ƒ age()</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-自定义变量与window对象关系"><span class="toc-text">1. 自定义变量与window对象关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-变量声明与函数声明的关系"><span class="toc-text">2. 变量声明与函数声明的关系</span></a></li></ol>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/js-2019-04-14-Window对象与变量声明之间的关系/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/window对象/"><i class="fa fa-tags"></i>window对象</a>
+     
+      <a href="/tags/变量声明与赋值/"><i class="fa fa-tags"></i>变量声明与赋值</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: viprosite@outlook.com
+      </div>
+    
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechat.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.png" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/js-2019-04-16-函数-构造函数-其内var-变量及this-成员/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/js-2019-04-12-js面试题/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

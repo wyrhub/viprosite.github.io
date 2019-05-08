@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="vipro">
+  
+  
+  <title>redux | viprosite</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="React,Redux,Redux,">
+  
+
+  
+  <meta name="description" content="使用redux的场景：某组件的状态需要共享；某状态需要在任何地方都能拿到；一个组件需要改变全局状态；一个组件需要改变另一个组件的状态；">
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.1/dist/av-min.js" async></script>
+
+  
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+  
+
+  
+    <script src="//unpkg.com/valine/dist/Valine.min.js" async></script>
+  
+
+  
+
+  <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"appid":"xBceeHl6gsVuGy3RnRWLCMiK-gzGzoHsz","appkey":"FJw3P8C6ipCkUVuePTljyH8X","comment":true,"count":true},
+    welcome: {"enable":true,"interval":30},
+    start_time: "2018-12-1",
+    passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
+    is_post: true,
+    lock: false,
+    author: "vipro",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script>
+
+  <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script>
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+
+  
+</head>
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">ViProSite</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 学习使我快乐！</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+        <a href="/about/" target="_self">关于</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/viprosite" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/about/" target="_self">
+            关于
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-11
+    </span>
+    
+      <span>
+        | <a href="/categories/React/"><i class="fa fa-bookmark"></i>React</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    redux
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="Redux相关概念"><a href="#Redux相关概念" class="headerlink" title="Redux相关概念"></a>Redux相关概念</h2><ul>
+<li><p>设计思想</p>
+<blockquote>
+<p>web应用是一个状态机，视图与状态一一对应；</p>
+<p>所有的状态保存在一个对象里。</p>
+</blockquote>
+</li>
+<li><p>store 存储数据（状态）的容器，整个应用仅一个store；单一数据源；</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; import &#123;createStore&#125; from &apos;redux&apos;</span><br><span class="line">&gt; const store = createStore( reducer )         createStore()方法返回一个store实例</span><br><span class="line">&gt; ---</span><br><span class="line">&gt; api：</span><br><span class="line">&gt; store.dispatch(&#123;_action&#125;)  view发出action的唯一方式，接收action对象为参数后发送出去</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>store作用：</p>
+<ol>
+<li>维持应用的state</li>
+<li>提供getState()方法获取当前时刻的state</li>
+<li>提供dispatch(action) 触发reducers更新state（且是触发其自动更新无需手动调用）</li>
+<li>提供subscribe(listener)注册监听器，一旦state发生变化就自动执行listener监听函数</li>
+<li>调用 subscribe(listener) 返回的函数注销监听器</li>
+</ol>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>state   store对象中定义的初始数据，只读，不可修改</p>
+<blockquote>
+<p>const state = store.getState()  获取store中当前时刻的state数据；</p>
+<p>store对象包含所有数据，想得到某时点的数据，就要对store生成快照，这种时点的数据集合就是state</p>
+</blockquote>
+</li>
+<li><p>action 一个对象，用来描述当前发生的事情（它是view发出的通知，表示state要发生改变）</p>
+<blockquote>
+<p>state变化导致view变化，但用户只能通过view来改变”状态“，所以state的变化只能是view导致的；</p>
+<p>action就是view发出的通知，表示state应该要发生变化了。</p>
+<p>action描述当前发生的事情，改变state的唯一方式就是发出action，其运送数据到store；</p>
+<hr>
+<p>而发出action的唯一方法是使用 store.dispatch(action) </p>
+<hr>
+<p>view要发送多少种消息，就会有多少种action, 可通过action creator（action创建函数）生成action；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; const action = &#123;</span><br><span class="line">&gt; 	type: &apos;ADD&apos;,</span><br><span class="line">&gt; 	payload: &apos;learn&apos;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; ---</span><br><span class="line">&gt; const ADD_TODO = &apos;添加todo&apos;       事件类型</span><br><span class="line">&gt; function addTodo(text)&#123;</span><br><span class="line">&gt;     return&#123;                       返回一个action</span><br><span class="line">&gt;         type: ADD_TODO,</span><br><span class="line">&gt;         info: text                事件携带的信息</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; const action1 = addTodo(&apos;learn&apos;)    生成一个action</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+</li>
+<li><p>reducer  纯函数，不得改变state；它定义state改变的规则：</p>
+<blockquote>
+<p>store收到action后，必须给出新的state，这样view才会改变，计算新state的过程就是reducer；</p>
+<p>其接受action和 当前state 为参数，返回一个新的state</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; const defaultState = 0</span><br><span class="line">&gt; const reducer = (state=defaultState, action)=&gt;&#123;</span><br><span class="line">&gt;     switch(action.type)&#123;</span><br><span class="line">&gt;         case &quot;ADD&quot;: return state+action.info;</span><br><span class="line">&gt;         default: return state</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>纯函数条件：不产生副作用</p>
+<p>​    副作用指函数对其外部产生影响：        </p>
+<p>1.发出HTTP调用</p>
+<p>2.Math.random()</p>
+<p>3.向控制台输出消息</p>
+<p>4.向数据库添加数据</p>
+</blockquote>
+<ul>
+<li><p>combineReducers()</p>
+<blockquote>
+<p>import {combineReducers} from ‘redux’</p>
+<p>const mainReducer = combineReducers({</p>
+<p>​    chatlog,</p>
+<p>​    statusMsg,</p>
+<p>​    userName</p>
+<p>})</p>
+<p>上述写法前提是state属性名需要与子reducer同名：</p>
+<p>chatlog(state.chatlog, action); userName(state.userName, action)</p>
+<p>不同时：</p>
+<p>const reducer = ({</p>
+<p>​    a: doThingsWithA,</p>
+<p>​    b: processB</p>
+<p>})</p>
+<p>等同于：</p>
+<p>const reducer = ({</p>
+<p>​    a: doThingsWithA（state.a, action）,</p>
+<p>​    b: processB(state.b, action)</p>
+<p>})</p>
+<hr>
+<p>可以把所有reducer放到一个文件中引入：</p>
+<p>import * as reducers from ‘./reducers’</p>
+<p>const reducer = combineReducers(reducer)</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h5 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h5><p>import {createStore, combineReducers} from ‘redux’</p>
+<p>import * as reducers from ‘./reducer’         引入所有的reducer</p>
+<p>const reducer = combineReducers(reducers)       </p>
+<p>const store = createStore(reducer)       生成store实例，收到action时自动调用reducers函数</p>
+<p>const nowState = store.getState()        获得当前时点的state</p>
+<p>store.dispatch(action_obj)                    发出一个action</p>
+<p>let unlistener = store.subscribe(listener)           state变化时自动调用listener监听函数</p>
+<hr>
+<h2 id="整个流程"><a href="#整个流程" class="headerlink" title="整个流程"></a>整个流程</h2><p>用户发出action ：store.dispatch(action_obj)；</p>
+<p>store自动调用reducer（当前state，收到的action_obj），返回新state；</p>
+<p>state发生变化时store就会调用subscribe(listener)监听函数listener；</p>
+<h5 id="简单示例1"><a href="#简单示例1" class="headerlink" title="简单示例1"></a>简单示例1</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">store.js:</span><br><span class="line">import &#123;createStore&#125; from &apos;redux&apos;</span><br><span class="line">import reducer from &apos;./reducer&apos;</span><br><span class="line">const store = createStore(reducer)</span><br><span class="line">export default store</span><br><span class="line">--</span><br><span class="line">Home.js:</span><br><span class="line">import React from &apos;react&apos;</span><br><span class="line">import store from &apos;./store&apos;</span><br><span class="line">class Home extends React.Component&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    return(</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h3&gt;Home...&lt;/h3&gt;</span><br><span class="line">        &lt;input type=&apos;text&apos; ref=&apos;textVal&apos; /&gt;</span><br><span class="line">        &lt;button onClick=&#123;this.handleClick&#125;&gt;Click&lt;/button&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">  handleClick = ()=&gt;&#123;</span><br><span class="line">    function inputVal(text)&#123;       //action 生成函数</span><br><span class="line">      return&#123;</span><br><span class="line">        type: &apos;INPUTVAL&apos;,</span><br><span class="line">        text</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    store.dispatch(inputVal(this.refs.textVal.value))  //发出一个action</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">--</span><br><span class="line">reducer.js:</span><br><span class="line">const defaultState = &apos;defaultState&apos;</span><br><span class="line">const reducer = (state=defaultState, action)=&gt;&#123;</span><br><span class="line">    switch(action.type)&#123;</span><br><span class="line">        case &quot;INPUTVAL&quot;: return action.text;</span><br><span class="line">        default: return state</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default reducer</span><br><span class="line">--</span><br><span class="line">My.js:</span><br><span class="line">import React from &apos;react&apos;</span><br><span class="line">import store from &apos;./store&apos;</span><br><span class="line">class My extends React.Component&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    return &lt;h3&gt;my ....&lt;/h3&gt;</span><br><span class="line">  &#125;</span><br><span class="line">  componentDidMount()&#123;</span><br><span class="line">    console.log(store.getState())</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">export default My</span><br></pre></td></tr></table></figure>
+<h4 id="简单示例2（计数器）："><a href="#简单示例2（计数器）：" class="headerlink" title="简单示例2（计数器）："></a>简单示例2（计数器）：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">const Conuter = (&#123;value&#125;)=&gt;(&lt;h3&gt;&#123;value&#125;&lt;/h3&gt;)</span><br><span class="line">const render = ()=&gt;&#123;</span><br><span class="line">    ReactDOM.render(&lt;Counter value=&#123;store.getState()&#125; /&gt;, document.getxId(&apos;root&apos;))</span><br><span class="line">&#125;</span><br><span class="line">store.subscribe(render)           每次state的变化都会导致网页重新渲染</span><br><span class="line">render()</span><br><span class="line">---</span><br><span class="line">const Counter = (&#123;value, onInc, onDec&#125;)=&gt;&#123;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;h3&gt;&#123;value&#125;&lt;/h3&gt;</span><br><span class="line">    &lt;button onClick=&#123;onInc&#125;&gt; + &lt;/button&gt;</span><br><span class="line">    &lt;button onClick=&#123;onDec&#125;&gt; - &lt;/button&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&#125;</span><br><span class="line">const reducer = (state=0, action)=&gt;&#123;</span><br><span class="line">  switch(action.type)&#123;</span><br><span class="line">    case &quot;INC&quot;: return state+1;</span><br><span class="line">    case &quot;DEC&quot;: return state-1;</span><br><span class="line">    default: return state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">const store = createStore(reducer)</span><br><span class="line">const render = ()=&gt;&#123;</span><br><span class="line">  ReactDOM.render(</span><br><span class="line">    &lt;Counter value=&#123;store.getState()&#125; </span><br><span class="line">            onInc=&#123;()=&gt;store.dispatch(&#123;type: &apos;INC&apos;&#125;)&#125;</span><br><span class="line">            onDec=&#123;()=&gt;store.dispatch(&#123;type: &apos;DEC&apos;&#125;)&#125; /&gt;,</span><br><span class="line">    document.getElementById(&apos;root&apos;)            </span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line">render()</span><br><span class="line">store.subscribe(render)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="中间件与异步操作："><a href="#中间件与异步操作：" class="headerlink" title="中间件与异步操作："></a>中间件与异步操作：</h1><h6 id="说明："><a href="#说明：" class="headerlink" title="说明："></a>说明：</h6><blockquote>
+<p>发出action后由reducer立即算出state是同步操作；</p>
+<p>action发出后过一段时间再执行reducer是异步；</p>
+<p>中间件使得reducer在异步操作结束后自动执行；</p>
+</blockquote>
+<h5 id="用法："><a href="#用法：" class="headerlink" title="用法："></a>用法：</h5><blockquote>
+<p>如日志中间件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt; import &#123;applyMiddleware, createStore&#125; from &apos;redux&apos;</span><br><span class="line">&gt; import createLogger from &apos;redux-logger&apos;</span><br><span class="line">&gt; const logger = createLogger()   生成日志中间件</span><br><span class="line">&gt; const store = createStore(</span><br><span class="line">&gt; 	reducer,</span><br><span class="line">&gt; 	applyMiddleware(logger)        传入createStore方法即可增强store.dispatch()</span><br><span class="line">&gt; )</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>  <strong>注意 </strong></p>
+<blockquote>
+<p>1.createStore( reducer, initialState, applyMiddleware(xxx))</p>
+<p>2.createStore( reducer, applyMiddleware( a, b, c))  中间件a、b、c传入的次序需要考虑</p>
+<p>3.applyMiddleware(xxx) 方法作用是将所有中间件组成一个数组后 依次 执行；</p>
+</blockquote>
+<h3 id="异步操作"><a href="#异步操作" class="headerlink" title="异步操作"></a>异步操作</h3><blockquote>
+<ol>
+<li>同步操作只需要发出一种action，异步操作需要发出3种action：</li>
+</ol>
+<p>操作发起时action</p>
+<p>操作成功时action</p>
+<p>操作失败时action</p>
+<hr>
+<p>向服务器取出数据，3种action有两种写法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; //写法一：名称相同，参数不同</span><br><span class="line">&gt; &#123; type: &quot;FETCH_POSTS&quot;&#125;</span><br><span class="line">&gt; &#123; type: &quot;FETCH_POSTS&quot;, status: &quot;error&quot;, error: &apos;Oops&apos;&#125;</span><br><span class="line">&gt; &#123; type: &quot;FETCH_POSTS&quot;, status: &quot;success&quot;, response: &#123;...&#125; &#125;</span><br><span class="line">&gt; //写法二：名称不同</span><br><span class="line">&gt; &#123; type: &apos;FETCH_POSTS_REQUEST&apos;&#125;</span><br><span class="line">&gt; &#123; type: &apos;FETCH_POSTS_FAILED&apos;, &apos;error&apos;: &apos;Oops&apos;&#125;</span><br><span class="line">&gt; &#123; type: &apos;FETCH_POSTS_SECCESS&apos;, response: &#123;...&#125; &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="2">
+<li><p>除action不同，异步操作的state也要改造，来反映不同的操作状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;    let state = &#123;</span><br><span class="line">&gt;        //...</span><br><span class="line">&gt;        isFetching: true,     是否在抓取数据</span><br><span class="line">&gt;        didInvalidate: true,   数据是否过时</span><br><span class="line">&gt;        lastUpdated: &apos;xxxxx&apos;    上一次更新时间</span><br><span class="line">&gt;    &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<hr>
+<p>   异步操作整个流程：</p>
+<ol>
+<li><p>操作开始时发出一个action，触发state更新为”正在操作“状态，view重新渲染</p>
+</li>
+<li><p>操作接收后，再发出一个action，触发state更新为“操作结束”状态，view再一次更新</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="异步操作方案1："><a href="#异步操作方案1：" class="headerlink" title="异步操作方案1："></a>异步操作方案1：</h3><h3 id="写出一个返回函数的action-creator，然后使用redux-chunk中间件改造store-dispatch（）"><a href="#写出一个返回函数的action-creator，然后使用redux-chunk中间件改造store-dispatch（）" class="headerlink" title="写出一个返回函数的action-creator，然后使用redux-chunk中间件改造store.dispatch（）"></a>写出一个返回函数的action-creator，然后使用redux-chunk中间件改造store.dispatch（）</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">class AsyncApp extends React.Component&#123;</span><br><span class="line">    componentDidMount()&#123;   //组件加载成功后发出一个action（向服务器请求数据）</span><br><span class="line">        const &#123;dispatch, selectedPost&#125; = this.props</span><br><span class="line">        dispatch( fetchPosts(selectedPost) )   //fetchPosts是action-create</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">--</span><br><span class="line">const fetchPosts = postTitle=&gt;(dispatch, getState)=&gt;&#123;</span><br><span class="line"> dispatch(requestPosts(postTitle))    //先发出一个action</span><br><span class="line"> return fetch(`/api/$&#123;postTitle&#125;.json`)   //然后进行异步操作</span><br><span class="line"> 			.then(response=&gt; response.json())</span><br><span class="line"> 			.then(json=&gt; dispatch(receivePosts(postTitle, json)))</span><br><span class="line">&#125;</span><br><span class="line">//转为普通写法：</span><br><span class="line">function fetchPosts(postTitle) &#123;             //fetchPosts是一个action-creator</span><br><span class="line">    return function(dispatch, getState)&#123;     //其返回一个函数</span><br><span class="line">        dispatch(requestPosts(postTitle))    //函数执行时先发出一个action表异步开始</span><br><span class="line">        return fetch(`/api/$&#123;postTitle&#125;.json`)   //然后进行异步操作</span><br><span class="line">                .then(response=&gt; response.json())</span><br><span class="line">                .then(json=&gt; dispatch(receivePosts(postTitle, json)))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">使用方法1： </span><br><span class="line">store.dispatch(fetchPosts(&apos;reactjs&apos;))</span><br><span class="line">使用方法2： </span><br><span class="line">store.dispatch(fetchPosts(&apos;reactjs&apos;)).then( ()=&gt;console.log(store.getState()))</span><br><span class="line">---</span><br><span class="line">fetchPosts是一个action-creator，其返回一个函数（而不是对象）；</span><br><span class="line">返回的函数执行时，先发出一个action，然后进行异步操作；</span><br><span class="line">拿到结果后，先将结果转为json格式，然后再发出一个action</span><br></pre></td></tr></table></figure>
+<p>  注意点；</p>
+<blockquote>
+<ol>
+<li><p>fetchPosts 返回的是函数，而普通action-creator返回的是对象</p>
+</li>
+<li><p>返回的函数参数是dispatch和getState这两个redux方法，普通action-creator参数是payload</p>
+</li>
+<li><p>返回的函数中，先发出一个action（requestPosts）表示操作开始</p>
+</li>
+<li><p>异步操作结束后再发出一个action（receivePosts）表示操作结束。</p>
+</li>
+<li><p>store.dispatch()方法正常情况下参数只能是对象（而不是函数），此时可以用中间件redux-thunk：</p>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;    import &#123; createStore, applyMiddleware &#125; from &apos;redux&apos;</span><br><span class="line">&gt;    import thunk from &apos;redux-chunk&apos;</span><br><span class="line">&gt;    import reducer from &apos;./reducers&apos;</span><br><span class="line">&gt;    const store = createStore(</span><br><span class="line">&gt;    	reducer, applyMiddleware(chunk)     //使用redux-chunk中间件改造dispacth方法</span><br><span class="line">&gt;    )</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<h3 id="异步操作方案二："><a href="#异步操作方案二：" class="headerlink" title="异步操作方案二："></a>异步操作方案二：</h3><h3 id="让action-creator返回一个Promise对象-redux-promise中间件"><a href="#让action-creator返回一个Promise对象-redux-promise中间件" class="headerlink" title="让action-creator返回一个Promise对象(redux-promise中间件)"></a>让action-creator返回一个Promise对象(redux-promise中间件)</h3><blockquote>
+<p>redux-promise源码：</p>
+<p>如果action本身是一个Promise，它resolve后的值应该是一个action对象，会被dispatch送出；</p>
+<p>如果action对象的payload属性是一个Promise对象，则无论resolve/ reject， dispatch方法都会发出action</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import &#123; createStore, applyMiddleware &#125; from &apos;redux&apos;</span><br><span class="line">import promiseMiddleware from &apos;redux-promise&apos;</span><br><span class="line">import reducer from &apos;./reducers&apos;</span><br><span class="line">const store = createStore(</span><br><span class="line">	reducer, applyMiddleware(promiseMiddleware)     </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<hr>
+<p>redux-promise中间件使得store.dispatch方法可以接收Promise对象作为参数，此时action-creator有2种写法：<br>法1：返回一个Promise对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; const fetchPosts = (dispatch, postTitle)=&gt; new Promise((resolve, reject)=&gt;&#123;</span><br><span class="line">&gt;      dispatch(requestPosts(postTitle))    //函数执行时先发出一个action表异步开始</span><br><span class="line">&gt;         return fetch(`/api/$&#123;postTitle&#125;.json`)   //然后进行异步操作</span><br><span class="line">&gt;                 .then(response=&gt; &#123;</span><br><span class="line">&gt;                     type: &apos;FETCH_POSTS&apos;,</span><br><span class="line">&gt;                     payload: response.json()</span><br><span class="line">&gt;                 &#125;)</span><br><span class="line">&gt; &#125;)</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>法2：action对象的payload属性是一个Promise对象（要从redux-actions模块引入createAction方法）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt; import &#123; createAction &#125; from &apos;redux-actions&apos;</span><br><span class="line">&gt; class AsyncApp extends React.Component&#123;</span><br><span class="line">&gt;     componentDidMount() &#123;</span><br><span class="line">&gt;         const &#123;dispatch, selectedPost&#125; = this.props</span><br><span class="line">&gt;         dispatch( requestPosts(selectedPost))  //发出同步action</span><br><span class="line">&gt;         dispatch( createAction(                //发出异步action</span><br><span class="line">&gt;         	&apos;FETCH_POSTS&apos;,</span><br><span class="line">&gt;         	fetch(`/api/$&#123;postTitle&#125;.json`)</span><br><span class="line">&gt;         		.then(response=&gt; response.json())</span><br><span class="line">&gt;         ))</span><br><span class="line">&gt;     &#125;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt; ---</span><br><span class="line">&gt; 1.上面代码中，第二个dispatch发出的是异步action，只有等操作结束这个action才会实际发出；</span><br><span class="line">&gt; 2.createAction第二个参数必须是一个Promise对象</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redux相关概念"><span class="toc-text">Redux相关概念</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#总结："><span class="toc-text">总结：</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#整个流程"><span class="toc-text">整个流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#简单示例1"><span class="toc-text">简单示例1</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#简单示例2（计数器）："><span class="toc-text">简单示例2（计数器）：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#中间件与异步操作："><span class="toc-text">中间件与异步操作：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#说明："><span class="toc-text">说明：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#用法："><span class="toc-text">用法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步操作"><span class="toc-text">异步操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步操作方案1："><span class="toc-text">异步操作方案1：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写出一个返回函数的action-creator，然后使用redux-chunk中间件改造store-dispatch（）"><span class="toc-text">写出一个返回函数的action-creator，然后使用redux-chunk中间件改造store.dispatch（）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步操作方案二："><span class="toc-text">异步操作方案二：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#让action-creator返回一个Promise对象-redux-promise中间件"><span class="toc-text">让action-creator返回一个Promise对象(redux-promise中间件)</span></a></li>
+  </div>
+</aside>
+  
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/react-2019-04-11-redux/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
+  
+  
+    <div class="passage-tags">
+     
+      <a href="/tags/Redux/"><i class="fa fa-tags"></i>Redux</a>
+    
+    </div>
+  
+</div>
+
+    </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
+    
+    <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+      <div class="site-footer-col">
+        <h5 class="site-footer-title"></h5>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+          <span class="site-footer-item">
+            <a href target="_self"></a>
+          </span>
+        
+      </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+      <div class="site-footer-info">
+        <i class="fa fa-paw"></i> 您是本站第 <span id="site-count"></span> 位访客
+      </div>
+    
+    
+      <div class="site-footer-info">
+        <i class="fa fa-at"></i> Email: viprosite@outlook.com
+      </div>
+    
+  </footer>
+</div>
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechat.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.png" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+    
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/vue-2019-04-11-vue-router/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/react-2019-04-11-react-router/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+      <a href="#site-comment" data-enable="true">
+        <i class="fa fa-commenting"></i>
+      </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+    <a id="share-btn-qq" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-qq"></i>
+    </a>
+  
+  
+    <a id="share-btn-wechat" href="javascript:void(0);" target="_blank">
+      <i class="fa fa-wechat"></i>
+    </a>
+  
+</div>
+    
+
+
+
+
+
+    
+  </body>
+</html>

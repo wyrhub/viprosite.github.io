@@ -6,16 +6,16 @@
   <meta name="author" content="vipro">
   
   
-  <title>归档: 2019/4 | viprosite</title>
+  <title>函数 构造函数 其内var 变量及this 成员 | viprosite</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="blog, 前端, 后端">
+    <meta name="keywords" content="JavaScript,构造函数,构造函数,var，this，原型对象,">
   
 
   
-  <meta name="description" content="vipro site">
+  <meta name="description" content="123456function fun()&amp;#123;                 //-------fun此处相当于一个构造函数  var name = &#39;var_name&#39;        //fun函数内部的局部变量，供fun函数内的函数使用  this.name = &#39;this_name&#39;      //this关键字上的name属性，在用new创建对象后使用；  var getName = function()&amp;#123;    console.log(name)  &amp;#125;  this.getName = function()&amp;#123;    console.log(this.name)  &amp;#125;&amp;#125;">
 
   
 
@@ -40,7 +40,7 @@
     welcome: {"enable":true,"interval":30},
     start_time: "2018-12-1",
     passwords: ["fc61307f921e60373b5b18f2932c02f96314f5a835853d8393c9430e50f34a0b", ],
-    is_post: false,
+    is_post: true,
     lock: false,
     author: "vipro",
     share: {"twitter":false,"facebook":false,"weibo":false,"qq":true,"wechat":true},
@@ -158,73 +158,75 @@
 </nav>
 <div id="site-process"></div>
     <main>
-      <div class="timeline">
-  <h2 class="timeline-title">归档: 10篇</h2>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-16
+    </span>
+    
+      <span>
+        | <a href="/categories/JavaScript/"><i class="fa fa-bookmark"></i>JavaScript</a>
+      </span>
+    
+    
+      <span>
+        | <i class="fa fa-unlock-alt"></i>UNLOCK
+      </span>
+    
+  </div>
+  <h1 class="passage-title">
+    函数 构造函数 其内var 变量及this 成员
+  </h1>
   
+  <article class="passage-article">
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">/*---------   </span><br><span class="line">所有的函数都可以看成构造函数</span><br><span class="line">所有函数都可在其上附加属性（fun.age ）,该属性可以是变量或函数</span><br><span class="line">函数内var 声明的变量都是局部变量，供函数内部使用</span><br><span class="line">函数内附加在this上的变量（函数）都只在new 创建对象后才可使用</span><br><span class="line">函数原型对象上的属性构造函数不可访问，只在new 创建对象后由新对象访问</span><br><span class="line">*/</span><br><span class="line">function fun()&#123;                 //-------fun此处相当于一个构造函数</span><br><span class="line">  var name = &apos;var_name&apos;        //fun函数内部的局部变量，供fun函数内的函数使用</span><br><span class="line">  this.name = &apos;this_name&apos;      //this关键字上的name属性，在用new创建对象后使用；</span><br><span class="line">  var getName = function()&#123;</span><br><span class="line">    console.log(name)</span><br><span class="line">  &#125;</span><br><span class="line">  this.getName = function()&#123;</span><br><span class="line">    console.log(this.name)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var fun;     // 该句被直接忽略</span><br><span class="line"></span><br><span class="line">fun.getName = function()&#123;                //1</span><br><span class="line">  console.log(&apos;fun.getName&apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun.prototype.getName1 = function()&#123;</span><br><span class="line">  console.log(&apos;fun.prototype.getName1&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun.getName()  // 执行1处代码；  fun.getName</span><br><span class="line">var f = new fun()</span><br><span class="line">console.log(f)  //fun &#123; name: &apos;this_name&apos; &#125;</span><br><span class="line">f.getName1()   //fun.prototype.getName1  f的构造函数fun内无getName1方法，在fun的原型对象中找到</span><br></pre></td></tr></table></figure>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
     
-      <h3 class="timeline-subtitle">2019</h3>
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/react-2019-04-17-react-redux/">react-redux（未完）</a>
-    </div>
+  </div>
+</aside>
   
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/函数体返回语句有无return-关键字区别/">函数体返回语句有无return 关键字区别</a>
-    </div>
+    <aside class="passage-copyright">
+      <div>本文作者: 王音然</div>
+      
+        <div>
+          原文链接: 
+          <a href target="_blank">http://git.wyr.red/passages/js-2019-04-16-函数-构造函数-其内var-变量及this-成员/</a>
+        </div>
+      
+      <div>
+        版权声明: 本博客所有文章除特别声明外, 转载请注明出处!
+      </div>
+    </aside>
   
-    
-    <div class="timeline-item">
-      <time>2019-04-17</time>
-      <a target="_self" href="/passages/js-2019-04-17-箭头函数/">箭头函数</a>
-    </div>
   
+    <div class="passage-tags">
+     
+      <a href="/tags/构造函数/"><i class="fa fa-tags"></i>构造函数</a>
+     
+      <a href="/tags/var，this，原型对象/"><i class="fa fa-tags"></i>var，this，原型对象</a>
     
-    <div class="timeline-item">
-      <time>2019-04-16</time>
-      <a target="_self" href="/passages/js-2019-04-16-函数-构造函数-其内var-变量及this-成员/">函数 构造函数 其内var 变量及this 成员</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-14</time>
-      <a target="_self" href="/passages/js-2019-04-14-Window对象与变量声明之间的关系/">Window对象与变量声明之间的关系</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-12</time>
-      <a target="_self" href="/passages/js-2019-04-12-js面试题/">js面试题</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/vue-2019-04-11-vue-router/">vue-router</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/react-2019-04-11-redux/">redux</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/react-2019-04-11-react-router/">React-router 学习记录</a>
-    </div>
-  
-    
-    <div class="timeline-item">
-      <time>2019-04-11</time>
-      <a target="_self" href="/passages/基于IP的防火墙配置规则/">防火墙配置规则之源IP与目的IP</a>
     </div>
   
 </div>
+
     </main>
+    
+      
+<div class="site-comment-contanier" data-plateform="leancloud">
+  
+    <p id="site-comment-info">
+      <i class="fa fa-spinner fa-spin"></i> 评论加载中
+    </p>
+    <div id="site-comment"></div>
+  
+</div>
     
     <div class="site-footer-wrapper">
   <footer class="site-footer">
@@ -311,19 +313,19 @@
 
 <div class="bottom-bar">
   <div class="bottom-bar-left">
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/js-2019-04-17-箭头函数/" data-enable="true">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/js-2019-04-14-Window对象与变量声明之间的关系/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
   <div class="bottom-bar-right">
-    <a href="javascript:void(0);" data-enable="false" id="site-toc-show-btn">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
       <i class="fa fa-bars"></i>
     </a>
     
-      <a href="javascript:void(0);" data-enable="false">
+      <a href="#site-comment" data-enable="true">
         <i class="fa fa-commenting"></i>
       </a>
     
